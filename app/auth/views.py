@@ -5,4 +5,4 @@ from flask_login import login_required, login_user, logout_user, current_user
 
 @auth.route('/')
 def hello():
-    return '<h1>Hello world</h1>'
+    return render_template('auth/login.html')
