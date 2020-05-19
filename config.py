@@ -1,5 +1,5 @@
 import os
-basedir = os.getcwd()
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
@@ -10,12 +10,10 @@ class Config:
         ['true', 'on', '1']
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    HOS_MAIL_SUBJECT_PREFIX = '[RCCG House of Solution]'
-    HOS_MAIL_SENDER = 'HOS Admin <hos@example.com>'
-    HOS_ADMIN = os.environ.get('HOS_ADMIN')
+    RCCG_HOS_MAIL_SUBJECT_PREFIX = '[HOS]'
+    RCCG_HOS_MAIL_SENDER = 'HOS Admin <rccghos@gmail.com>'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    
     @staticmethod
     def init_app(app):
         pass
@@ -25,6 +23,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+    RCCG_HOS_ADMIN = os.environ.get('RCCG_HOS_ADMIN')
 
 
 class TestingConfig(Config):
@@ -39,9 +38,9 @@ class ProductionConfig(Config):
 
 
 config = {
-
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
+
     'default': DevelopmentConfig
 }
