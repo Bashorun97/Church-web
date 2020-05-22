@@ -1,16 +1,16 @@
 from flask_sqlalchemy import SQLAlchemy
-#from flask_marshmallow import Marshmallow
+from flask_marshmallow import Marshmallow
 from flask_mail import Mail
 from flask_moment import Moment 
 from flask_bootstrap import Bootstrap
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
-#from flask_login import LoginManager
+from flask_login import LoginManager
 
 
 db = SQLAlchemy()
-#ma = Marshmallow()
+ma = Marshmallow()
 mail = Mail()
 moment = Moment()
 bootstrap = Bootstrap()
@@ -18,8 +18,8 @@ migrate = Migrate()
 cors = CORS()
 bcrypt = Bcrypt()
 
-#login_manager = LoginManager
-#login_manager.login_view = 'auth.view'
+login_manager = LoginManager()
+login_manager.login_view = 'auth.view'
 
 
 import re

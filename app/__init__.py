@@ -1,5 +1,5 @@
 from flask import Flask
-from .extensions import db, mail, moment, bootstrap, migrate, cors, bcrypt
+from .extensions import db, mail, moment, bootstrap, migrate, cors, bcrypt, ma, login_manager
 from config import config
 
 def __call__(config_name):
@@ -8,13 +8,13 @@ def __call__(config_name):
     config[config_name].init_app(app)
     
     db.init_app(app)
-    #ma.init_app(app)
+    ma.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
     bootstrap.init_app(app)
     cors.init_app(app)
     bcrypt.init_app(app)
-    #login_manager.init_app(app)
+    login_manager.init_app(app)
 
     from app.auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
