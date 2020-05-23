@@ -1,4 +1,4 @@
-from app import db
+from app import db, login_manager
 from flask import current_app
 
 class User(db.Model):
@@ -24,7 +24,7 @@ class User(db.Model):
             print(self.is_admin)
             if self.email == current_app.config['RCCG_HOS_ADMIN']:
                 self.is_admin = True
-            
+
 
 class Article(db.Model):
     __tablename__ = 'articles'
@@ -35,3 +35,6 @@ class Article(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
