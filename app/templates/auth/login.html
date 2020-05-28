@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Login</title>
-    </head>
-    <body>
-        <h1>
-            {{ name }}
-        </h1>
-    </body>
-</html>
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}HOS - Login{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Log into your account</h1>
+</div>
+<div class="col-md-4">
+    {{ wtf.quick_form(form)}}
+    <br>
+    <p>Forgot your password? <a href="{{ url_for('auth.change_password') }}">Click here to reset it</a>.</p>
+    <p>New user? <a href="{{ url_for('auth.registration') }}">Click here to register</a>.</p>
+</div>
+{% endblock %}
