@@ -19,7 +19,7 @@ cors = CORS()
 bcrypt = Bcrypt()
 
 login_manager = LoginManager()
-login_manager.login_view = 'auth.view'
+login_manager.login_view = 'auth.login'
 
 
 import re
