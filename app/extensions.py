@@ -23,6 +23,7 @@ login_manager.login_view = 'auth.view'
 
 
 import re
+#from models import User
 
 def emailcheck(str):
     """
@@ -53,3 +54,12 @@ def emailcheck(str):
             return False
     except AttributeError:
         raise False
+'''
+def telephone_check(form):
+    data = form.telephone.data
+    tel = User.query.filter_by(telephone=data).first()
+    if tel:
+        return True
+    else:
+        return False
+'''
