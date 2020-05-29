@@ -1,9 +1,16 @@
-<!DOCTYPE html>
-<html>
-    <title>
-        Home page
-    </title>
-    <body>
-        <h1>{{ name }}</h1>
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %} Home Page {% endblock %}
+
+{% block page_content %}
+
+  <div class="page-header">
+    {% if current_user.is_authenticated %}
+    <h1>Welcome, {{ current_user.name }}</h1>
+    <h3>Hope you like it here!!</h3>
+    {% endif %}
+  </div>
+  <div class="col-md-4">
+    <h4>The Convention</h4>
+  </div>
+
+{% endblock %}

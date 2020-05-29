@@ -34,15 +34,22 @@ def registration():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email, username=form.username.data).first() or User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(username=form.username.data).first() or User.query.filter_by(email=form.username.data).first()
+        print(user)
         if user is not None and user.verify_password(form.password.data):
-            login(user, form.remember_me.data)
+            login_user(user, form.remember_me.data)
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
                 next = url_for('main.index')
             return redirect(next)
         flash('Invalid email or password.')
     return render_template('/auth/login.html', form=form)
+
+@auth.route('/logout', methods=['GET', 'POST'])
+def logout():
+    logout_user()
+    flash('You have been logged out.')
+    return redirect(url_for('main.index'))
 
 @auth.route('change-password', methods=['GET', 'POST'])
 def change_password():
