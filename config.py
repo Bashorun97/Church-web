@@ -12,6 +12,9 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     RCCG_HOS_MAIL_SUBJECT_PREFIX = '[HOS]'
     RCCG_HOS_MAIL_SENDER = 'HOS Admin <rccghos@gmail.com>'
+    MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', False)
+    MAIL_MAX_EMAIL = '10'
+    MAIL_ASCII_ATTACHMENTS = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     @staticmethod
