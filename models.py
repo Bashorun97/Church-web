@@ -1,7 +1,8 @@
 import hashlib
+import datetime as d
+import jwt, json
 from app import db, login_manager, ma
 from flask import current_app
-import datetime as d
 from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -19,6 +20,7 @@ class User(db.Model, UserMixin):
     worker = db.Column(db.Boolean, default=False)
     is_admin = db.Column(db.Boolean, default=False)
     profile_picture_url = db.Column(db.String(50))
+    confirmed = db.Column(db.Boolean, default=False)
     users = db.relationship('Article', backref='poster')
 
 
@@ -41,6 +43,48 @@ class User(db.Model, UserMixin):
     def verify_password(self, password):
         return check_password_hash(self.hashed_password, password)
     
+    # jwt for account confirmation
+    def generate_json_web_confirmation_token(self):
+        token = jwt.encode({'user_id':self.id, 'exp':d.datetime.utcnow() + d.timedelta(minutes=30)}, current_app.config['SECRET_KEY'])
+        return token #dumps
+    
+    def confirm_token(self, token):
+        try:
+            key = jwt.decode(token, current_app.config['SECRET_KEY']) #loads
+        except:
+            return False
+        # get user_id for dictionary "key"
+        if key.get('user_id') != self.id:
+            return False
+        self.confirmed = True
+        db.session.add(self)
+        return True
+    
+    def generate_json_web_token_for_password_reset(self):
+        token = jwt.encode({'reset':self.id, 'exp':d.datetime.utcnow() + d.timedelta(minutes=30)}, current_app.config['SECRET_KEY'])
+        return token
+    
+    @staticmethod
+    def reset_password(self, token, new_password):
+        try:
+            key = jwt.decode(token, current_app.config['SECRET_KEY'])
+        except:
+            return False
+
+        '''
+        Difference between reset_password and confirm_token is that the former method
+        tries to determine a user by extracting the user object directly from the database
+        unlike confirm_token that merely uses user_id as a component for crytographically
+        creating and deciphering a token
+        '''
+
+        user = User.query.get(key.get('reset'))
+        if user is None:
+            return False
+        user.passoword = new_password
+        db.session.add(user)
+        return True
+
 
 class Article(db.Model):
     id = db.Column(db.Integer, nullable=False, primary_key=True)
@@ -54,8 +98,6 @@ class Article(db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    l = User.query.get(int(user_id))
-    print(l.name)
     return User.query.get(int(user_id))
 
 class UserSchema(ma.Schema):
@@ -65,6 +107,7 @@ class UserSchema(ma.Schema):
             'id', 'name', 'surname', 'usernmae', 'email', 'age', 'telephone',
             'house_address', 'profile_picture'
         )
+
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
