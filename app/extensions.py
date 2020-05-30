@@ -54,12 +54,4 @@ def emailcheck(str):
             return False
     except AttributeError:
         raise False
-'''
-def telephone_check(form):
-    data = form.telephone.data
-    tel = User.query.filter_by(telephone=data).first()
-    if tel:
-        return True
-    else:
-        return False
-'''
+    

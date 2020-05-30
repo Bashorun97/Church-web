@@ -30,6 +30,10 @@ class RegistrationForm(FlaskForm):
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use.')
+    
+    def validate_telephone(self, field):
+        if User.query.filter_by(telephone=field.data).first():
+            raise ValidationError('Telephone already in use')
 
 
 class LoginForm(FlaskForm):
@@ -40,7 +44,7 @@ class LoginForm(FlaskForm):
 
 
 class ChangePasswordForm(FlaskForm):
-    old_password = PasswordField('Old password', validators=[DataRequired()])
+    oldpassword = PasswordField('Old password', validators=[DataRequired()])
     password = PasswordField('New password', validators=[DataRequired(), EqualTo('password2',
     message='Passwords must match.')])
     password2 = PasswordField('Confirm password', validators=[DataRequired()])

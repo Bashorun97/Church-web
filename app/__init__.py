@@ -1,7 +1,9 @@
 from flask import Flask
-from .extensions import db, mail, moment, bootstrap, migrate, cors, bcrypt, ma, login_manager
+#from flask_mail import Mail
+from .extensions import db, moment, mail, bootstrap, migrate, cors, bcrypt, ma, login_manager
 from config import config
 
+#mail = Mail()
 def __call__(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])

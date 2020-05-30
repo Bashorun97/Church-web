@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}RCCG HOS - Confirm your account {% endblock %}
+
+{% block page_content %}
+<div clas="page-header">
+    <h1>
+        Hello, {{ current_user.username }}!
+    </h1>
+    <h4>You haven't confirmed your account yet.</h4>
+    <p>
+        You're attempting to access a protected site. Before you can, please
+        you still to confirm you account.
+        Check your inbox for a confirmation mail.
+    </p>
+    <p>
+        Need another confirmation email?
+        <a href="{{ url_for('auth.resend_confirmation') }}">Click here!</a>
+    </p>
+</div>
+{% endblock %}
