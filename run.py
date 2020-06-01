@@ -3,7 +3,7 @@ from app.extensions import migrate
 from app import __call__, db
 from models import User, Article, user_schema, users_schema, article_schema
     
-app = __call__(os.getenv('HOS_CONFIG') or 'default')
+app = __call__(os.getenv('HOS_CONFIG') or 'production')
 migrate.init_app(app, db)
 
 @app.shell_context_processor
