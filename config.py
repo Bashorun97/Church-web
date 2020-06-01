@@ -37,6 +37,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    RCCG_HOS_ADMIN = os.environ.get('RCCG_HOS_ADMIN')
 
 
 config = {
