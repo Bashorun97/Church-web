@@ -22,6 +22,6 @@ def __call__(config_name):
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
     from app.main import main as main_blueprint
-    app.register_blueprint(main_blueprint, url_prefix='/main')
+    app.register_blueprint(main_blueprint)
 
     return app

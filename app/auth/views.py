@@ -6,7 +6,7 @@ from app.extensions import emailcheck
 from flask_login import login_required, login_user, logout_user, current_user
 from .forms import (
     RegistrationForm, LoginForm, ChangePasswordForm, ResetPasswordForm,
-    ResetPasswordRequestForm
+    ResetPasswordRequestForm, ChangeEmailRequestForm
 )
 from models import User, Article
 from app.email import send_email
@@ -142,3 +142,28 @@ def reset_password(token):
         else:
             return redirect(url_for('main.index'))
     return render_template('auth/reset_password.html')
+
+@auth.route('/change-email', methods=['GET', 'POST'])
+@login_required
+def change_email_request():
+    form = ChangeEmailRequestForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.password.data):
+            new_mail = form.email.data.lower()
+            token = current_user.generate_json_web_token_for_email_change(form.email.data)
+            send_email(current_user.email, 'Confirm your email address', 'auth/email/change_email', user=current_user, token=token)
+            flash('A confirmation email has been sent to your inbox. Do confirm you new mail address within 30 minutes')
+            return redirect(url_for('main.index'))
+        else:
+            flash('Invalid password or email address given')
+    return render_template('auth/change_email.html', form=form)
+
+@auth.route('/change-email/<token>', methods=['GET', 'POST'])
+@login_required
+def change_email(token):
+    if current_user.change_email(token):
+        db.session.commit()
+        flash('Your email address has been updated')
+    else:
+        flash('Invaid request.')
+    return redirect(url_for('main.index'))

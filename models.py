@@ -31,7 +31,9 @@ class User(db.Model, UserMixin):
                 self.is_admin = True
             if self.is_admin is None:
                 self.admin = False
-    
+
+    """========= Password Verification Starts ========="""
+
     @property
     def password(self):
         raise AttributeError(f'Password field isn\'t readable')
@@ -43,6 +45,8 @@ class User(db.Model, UserMixin):
     def verify_password(self, password):
         return check_password_hash(self.hashed_password, password)
     
+
+    """========= Account Authentication Starts ========="""
     # jwt for account confirmation
     def generate_json_web_confirmation_token(self):
         token = jwt.encode({'user_id':self.id, 'exp':d.datetime.utcnow() + d.timedelta(minutes=30)}, current_app.config['SECRET_KEY'])
@@ -59,7 +63,10 @@ class User(db.Model, UserMixin):
         self.confirmed = True
         db.session.add(self)
         return True
-    
+        
+
+    """========= Change of Password Confirmation starts ========="""
+
     def generate_json_web_token_for_password_reset(self):
         token = jwt.encode({'reset':self.id, 'exp':d.datetime.utcnow() + d.timedelta(minutes=30)}, current_app.config['SECRET_KEY'])
         return token
@@ -84,8 +91,33 @@ class User(db.Model, UserMixin):
         user.passoword = new_password
         db.session.add(user)
         return True
+    
+    """========= Ends - Change of Password Confirmation ========="""
 
 
+    """========= Change of Email Confirmation starts ========="""
+    def generate_json_web_token_for_email_change(self, new_mail):
+        token = jwt.encode({'change-email':self.id, 'exp':d.datetime.utcnow() + d.timedelta(minutes=30), 'new_mail':new_mail}, current_app.config['SECRET_KEY'])
+        return token
+    
+    def change_email(self, token):
+        try:
+            key = jwt.decode(token, current_app.config['SECRET_KEY'])
+        except InvalidSignatureError:
+            return False
+        except:
+            return False
+        if key.get('change-email') != self.id:
+            return False
+        if key.get('new_mail') is None:
+            return False
+        if User.query.filter_by(email=new_mail).first() is not None:
+            return False
+        self.email = new_mail
+        db.session.add(self)
+        return True
+        
+        
 class Article(db.Model):
     id = db.Column(db.Integer, nullable=False, primary_key=True)
     story = db.Column(db.Text)
